@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WebVerse IDE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      font-family: 'Roboto', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      max-width: 1200px;
+      width: 90%;
+      margin: auto;
+      padding: 40px 20px;
+      gap: 40px;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.8rem;
+      margin: 0 0 10px;
+      color: #00ffe7;
+      text-shadow: 0 0 20px #00ffe7;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      color: #94eaff;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+      color: #ffffff;
+    }
+
+    .section p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .button-group {
+      margin-top: 10px;
+    }
+
+    .section button {
+      padding: 12px 25px;
+      background: #ffffff;
+      color: #2c5364;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease-in-out;
+    }
+
+    .section button:hover {
+      background: #e0e0e0;
+    }
+
+    .quote {
+      font-style: italic;
+      font-size: 1rem;
+      color: #d1f3ff;
+      margin-top: 15px;
+    }
+
+    @media screen and (max-width: 768px) {
+      h1 {
+        font-size: 2.8rem;
+      }
+      .section {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Website Title -->
+    <h1>WebVerse IDE</h1>
+    <div class="logo">~A universe for web learners & builders!</div>
+
+    <!-- Section 1: Launch Editor -->
+    <div class="section">
+      <h2>🚀 Ready to Code Like a Rockstar?</h2>
+      <p>Unleash your creativity with our live code editor! Build websites using HTML, CSS, and JavaScript. Track your streaks and flex your skills.</p>
+      <div class="button-group">
+        <button onclick="location.href='editor.html'">💻 Launch Editor</button>
+      </div>
+    </div>
+
+    <!-- Section 2: Tutorial -->
+    <div class="section">
+      <h2>📚 Wanna Learn Before You Code?</h2>
+      <p>Begin your journey into the web dev universe. Explore beginner-friendly tutorials on HTML, CSS, and JavaScript fundamentals—no spaceship required 🚀.</p>
+      <div class="button-group">
+        <button onclick="location.href='tutorial.html'">📖 Open Tutorial Guide</button>
+      </div>
+      <div class="quote">✨ “The best error message is the one that never shows up.”</div>
+    </div>
+
+    <!-- Section 3: Quiz -->
+    <div class="section">
+      <h2>🎉 Fun Quiz Time!</h2>
+      <p>Think you’re a coding ninja or just really good at guessing? 😎<br>
+      Test your brain with our fun quizzes and maybe win the ultimate title of <strong>"Bug Slayer Supreme 🐛👑"</strong> (or at least some bragging rights)!</p>
+      <div class="button-group">
+        <button onclick="location.href='quiz.html'">🧠 Take a Quiz</button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

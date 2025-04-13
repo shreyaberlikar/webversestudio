@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VS Code Style Code Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.light-mode {
+      background-color: #fff;
+      color: #333;
+    }
+    .editor-app {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 50px;
+      background-color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      transition: width 0.3s;
+      position: relative;
+    }
+    .sidebar.expanded {
+      width: 200px;
+      align-items: flex-start;
+    }
+    .sidebar i {
+      color: #ccc;
+      font-size: 20px;
+      margin: 20px 0;
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding-left: 10px;
+    }
+    .sidebar i:hover {
+      transform: scale(1.2);
+      color: #00f5b1;
+    }
+    .sidebar.expanded i::after {
+      content: attr(title);
+      margin-left: 15px;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .tabs {
+      display: flex;
+      background-color: #252526;
+      border-bottom: 1px solid #333;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .tab {
+      padding: 10px 20px;
+      background: #2d2d2d;
+      border-right: 1px solid #333;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .tab.active {
+      background: #1e1e1e;
+      font-weight: bold;
+      color: #00f5b1;
+    }
+    .tab:hover {
+      background-color: #444;
+    }
+    .editor-container {
+      flex: 1;
+      display: none;
+      height: calc(100vh - 180px);
+    }
+    .editor-container.active {
+      display: block;
+    }
+    #output {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #fff;
+    }
+    .console-output {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 10px;
+      height: 150px;
+      overflow-y: auto;
+    }
+    .bottom-bar {
+      background-color: #333;
+      color: #aaa;
+      padding: 5px 15px;
+      font-size: 12px;
+    }
+    @media (max-width: 768px) {
+      .editor-app {
+        flex-direction: column;
+      }
+      .sidebar {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+        height: 50px;
+      }
+      .sidebar.expanded i::after {
+        display: none;
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+</head>
+<body>
+  <div class="editor-app">
+    <div class="sidebar">
+      <i class="fas fa-bars" title="Menu" onclick="toggleSidebar()"></i>
+      <i class="fas fa-code" title="HTML" onclick="switchTab('html')"></i>
+      <i class="fas fa-file-alt" title="CSS" onclick="switchTab('css')"></i>
+      <i class="fas fa-cog" title="JavaScript" onclick="switchTab('js')"></i>
+      <i class="fas fa-play" title="Run Code" onclick="runCode()"></i>
+      <i class="fas fa-download" title="Download" onclick="downloadCode()"></i>
+      <i class="fas fa-adjust" title="Toggle Theme" onclick="toggleTheme()"></i>
+      <i class="fas fa-exchange-alt" title="Toggle Layout" onclick="toggleOrientation()"></i>
+    </div>
+    <div class="main">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('html')">HTML</div>
+        <div class="tab" onclick="switchTab('css')">CSS</div>
+        <div class="tab" onclick="switchTab('js')">JavaScript</div>
+        <div class="tab" onclick="runCode()">▶ Run</div>
+        <div class="tab" onclick="switchTab('output')">Live Preview</div>
+      </div>
+      <div id="html" class="editor-container active"></div>
+      <div id="css" class="editor-container"></div>
+      <div id="js" class="editor-container"></div>
+      <iframe id="output" class="editor-container"></iframe>
+      <div id="console" class="console-output"></div>
+      <div class="bottom-bar">VS Code Style Editor — HTML, CSS, JS with Console & Preview</div>
+    </div>
+  </div>
+
+  <script>
+    let editors = {};
+
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+
+    require(['vs/editor/editor.main'], function () {
+      monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+        target: monaco.languages.typescript.ScriptTarget.ES2020,
+        allowNonTsExtensions: true
+      });
+
+      monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: false,
+        noSyntaxValidation: false
+      });
+
+      monaco.languages.registerCompletionItemProvider('javascript', {
+        provideCompletionItems: () => {
+          const suggestions = [
+            {
+              label: 'log',
+              kind: monaco.languages.CompletionItemKind.Snippet,
+              insertText: "console.log('$1');",
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: "Console output"
+            },
+            {
+              label: 'fetch',
+              kind: monaco.languages.CompletionItemKind.Snippet,
+              insertText: "fetch('$1').then(res => res.json()).then(data => console.log(data));",
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: "Fetch API Example"
+            },
+            {
+              label: 'setTimeout',
+              kind: monaco.languages.CompletionItemKind.Snippet,
+              insertText: "setTimeout(() => {\n  $1\n}, 1000);",
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: "Run code after delay"
+            },
+            {
+              label: 'forLoop',
+              kind: monaco.languages.CompletionItemKind.Snippet,
+              insertText: "for (let i = 0; i < $1; i++) {\n  console.log(i);\n}",
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: "Basic for loop"
+            }
+          ];
+          return { suggestions };
+        }
+      });
+
+      editors.html = monaco.editor.create(document.getElementById('html'), {
+        value: localStorage.getItem('code-html') || "<!DOCTYPE html>\n<html>\n<head>\n  <title>My Page</title>\n</head>\n<body>\n  <h1>Hello!</h1>\n</body>\n</html>",
+        language: 'html',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+
+      editors.css = monaco.editor.create(document.getElementById('css'), {
+        value: localStorage.getItem('code-css') || "body {\n  background-color: lightblue;\n}",
+        language: 'css',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+
+      editors.js = monaco.editor.create(document.getElementById('js'), {
+        value: localStorage.getItem('code-js') || "console.log('JavaScript is working!');",
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+
+      function showEditorErrors(editorType) {
+        const model = editors[editorType].getModel();
+        const markers = monaco.editor.getModelMarkers({ resource: model.uri });
+
+        if (markers.length > 0) {
+          const messages = markers.map(marker => `[${marker.severity}] Line ${marker.startLineNumber}: ${marker.message}`).join('\n');
+          document.getElementById('console').innerText = messages;
+        }
+      }
+
+      ['html', 'css', 'js'].forEach(type => {
+        editors[type].onDidChangeModelContent(() => {
+          updateLivePreview();
+          localStorage.setItem(`code-${type}`, editors[type].getValue());
+          showEditorErrors(type);
+        });
+      });
+
+      updateLivePreview();
+    });
+
+    function switchTab(id) {
+      document.querySelectorAll('.editor-container').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      if (id === 'output') {
+        document.getElementById('output').classList.add('active');
+      } else {
+        document.getElementById(id).classList.add('active');
+      }
+      const tab = document.querySelector(`.tab[onclick*="${id}"]`);
+      if (tab) tab.classList.add('active');
+    }
+
+    function runCode() {
+      const html = editors.html.getValue();
+      const css = editors.css.getValue();
+      const js = editors.js.getValue();
+      const outputFrame = document.getElementById('output');
+      const consoleDiv = document.getElementById('console');
+      consoleDiv.innerHTML = "";
+      const bg = document.body.classList.contains('light-mode') ? '#fff' : '#1e1e1e';
+      const script = `
+        <script>
+          (function() {
+            const log = console.log;
+            const error = console.error;
+            console.log = function(...args) {
+              parent.document.getElementById('console').innerHTML += args.join(' ') + '\\n';
+              log.apply(console, args);
+            };
+            console.error = function(...args) {
+              parent.document.getElementById('console').innerHTML += '[Error] ' + args.join(' ') + '\\n';
+              error.apply(console, args);
+            };
+            try { ${js} } catch (err) { console.error(err); }
+          })();
+        <\/script>
+      `;
+      outputFrame.srcdoc = injectCode(html, css, script, bg);
+      switchTab('output');
+    }
+
+    function updateLivePreview() {
+      if (!editors.html || !editors.css || !editors.js) return;
+      const html = editors.html.getValue();
+      const css = editors.css.getValue();
+      const js = `<script>${editors.js.getValue()}<\/script>`;
+      const bg = document.body.classList.contains('light-mode') ? '#fff' : '#1e1e1e';
+      document.getElementById('output').srcdoc = injectCode(html, css, js, bg);
+    }
+
+    function injectCode(html, css, jsCode, bg) {
+      let withCSS = html.includes("</head>")
+        ? html.replace("</head>", `<style>body { background-color: ${bg}; } ${css}</style></head>`)
+        : `<style>body { background-color: ${bg}; } ${css}</style>\n` + html;
+      return withCSS.includes("</body>")
+        ? withCSS.replace("</body>", `${jsCode}</body>`)
+        : withCSS + jsCode;
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+      const newTheme = document.body.classList.contains('light-mode') ? 'vs' : 'vs-dark';
+      Object.values(editors).forEach(editor => monaco.editor.setTheme(newTheme));
+      updateLivePreview();
+    }
+
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('expanded');
+    }
+
+    function toggleOrientation() {
+      const app = document.querySelector('.editor-app');
+      app.style.flexDirection = app.style.flexDirection === 'column' ? 'row' : 'column';
+    }
+
+    function downloadFile(filename, content) {
+      const blob = new Blob([content], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadCode() {
+      downloadFile('index.html', editors.html.getValue());
+      downloadFile('style.css', editors.css.getValue());
+      downloadFile('script.js', editors.js.getValue());
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML and CSS - Learn Web Development</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: #fff;
+      transition: background 0.3s, color 0.3s;
+    }
+    header {
+      background-color: #2c2f33;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      color: #00ff84;
+    }
+    .search-bar {
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      width: 200px;
+    }
+    nav {
+      background-color: #2c2f33;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      padding-top: 20px;
+      position: fixed;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0 10px;
+    }
+    nav li {
+      margin: 15px 0;
+    }
+    nav a {
+      text-decoration: none;
+      color: #00ff84;
+      display: block;
+      padding: 10px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    nav a:hover {
+      background-color: #00ff84;
+      color: #000;
+    }
+    main {
+      margin-left: 270px;
+      padding: 30px;
+    }
+    main h2 {
+      margin-bottom: 10px;
+      color: #00ff84;
+    }
+    main p, main li {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    code {
+      background-color: #2e2e2e;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .code-block {
+      background-color: #2e2e2e;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    section {
+  margin-bottom: 1rem;
+}
+
+    .highlight {
+      background-color: #00ff84;
+      color: #000;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    code, pre {
+  background-color: #2d2d2d;
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 0; /* removes unwanted vertical spacing */
+  display: block;
+  overflow-x: auto; /* allows horizontal scroll if content overflows */
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.code-container {
+  margin: 0;
+  padding: 0;
+}
+main {
+  margin-left: 140px;
+  padding: 30px;
+}
+
+pre {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const links = document.querySelectorAll("nav a");
+      links.forEach(link => {
+        link.addEventListener("click", function(e) {
+          e.preventDefault();
+          const sectionId = this.getAttribute("href").replace("#", "");
+          const section = document.getElementById(sectionId);
+          if(section) {
+            section.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <h1>HTML, CSS and JavaScript</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#html-basics">HTML Basics</a></li>
+      <li><a href="#add-css">How to Add CSS</a></li>
+      <li><a href="#headings">HTML Headings</a></li>
+      <li><a href="#class-attribute">HTML Class Attribute</a></li>
+      <li><a href="#colors">HTML Colors</a></li>
+      <li><a href="#bg-color">HTML Background Color</a></li>
+      <li><a href="#primer-css">Primer CSS</a></li>
+      <li><a href="#difference">HTML vs CSS</a></li>
+      <li><a href="#history">CSS History</a></li>
+      <li><a href="#css-selectors">CSS Selectors</a></li>
+      <li><a href="#box-model">CSS Box Model</a></li>
+      <li><a href="#flexbox">CSS Flexbox</a></li>
+      <li><a href="#media-queries">CSS Media Queries</a></li>
+      <li><a href="#css-animations">CSS Animations</a></li>
+      <li><a href="#js-intro">JS Introduction</a></li>
+      <li><a href="#js-basics">JS Basics</a></li>
+      <li><a href="#js-dom">JS & DOM</a></li>
+      <li><a href="#js-example">JS Example</a></li>
+    </ul>
+  </nav>
+  <main>
+    <main>
+      <section id="overview">
+        <h2>HTML, CSS, and JavaScript</h2>
+        <p>This article provides a complete overview of <span class="highlight">HTML</span>, <span class="highlight">CSS</span>, and <span class="highlight">JavaScript</span> for building interactive and visually appealing web pages.</p>
+      </section>
+      <section id="html-basics">
+        <h2>HTML Basics</h2>
+        <p>HTML provides structure using elements like headings, paragraphs, and links.</p>
+        <div class="code-block"><code>
+  &lt;!DOCTYPE html&gt;<br>
+  &lt;html&gt;<br>
+    &nbsp;&nbsp;&lt;head&gt;&lt;title&gt;My Page&lt;/title&gt;&lt;/head&gt;<br>
+    &nbsp;&nbsp;&lt;body&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Welcome&lt;/h1&gt;<br>
+    &nbsp;&nbsp;&lt;/body&gt;<br>
+  &lt;/html&gt;
+        </code></div>
+      </section>
+      <section id="add-css">
+        <h2>How to Add CSS</h2>
+        <ul>
+          <li><strong>Inline:</strong> Using the <code>style</code> attribute inside HTML tags.</li>
+          <li><strong>Internal:</strong> Using a <code>&lt;style&gt;</code> tag in the <code>&lt;head&gt;</code>.</li>
+          <li><strong>External:</strong> Linking a separate CSS file using <code>&lt;link&gt;</code>.</li>
+        </ul>
+      </section>
+      <section id="headings">
+        <h2>HTML Headings</h2>
+        <p>HTML has six levels of headings: <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code>.</p>
+      </section>
+      <section id="class-attribute">
+        <h2>HTML Class Attribute</h2>
+        <p>Used to apply styles via CSS or select with JS.</p>
+        <div class="code-block"><code>&lt;div class="highlight"&gt;Styled Text&lt;/div&gt;</code></div>
+      </section>
+      <section id="colors">
+        <h2>HTML Colors</h2>
+        <p>Use color names, HEX codes, or RGB values.</p>
+      </section>
+      <section id="bg-color">
+        <h2>HTML Background Color</h2>
+        <p>Example using inline style:</p>
+        <div class="code-block"><code>&lt;body style="background-color: lightblue;"&gt;</code></div>
+      </section>
+      <section id="primer-css">
+        <h2>Primer CSS</h2>
+        <p><a href="https://primer.style/css">Primer CSS</a> is GitHub’s CSS framework.</p>
+      </section>
+      <section id="difference">
+        <h2>Difference Between HTML and CSS</h2>
+        <ul>
+          <li><strong>HTML</strong> – structure</li>
+          <li><strong>CSS</strong> – styling</li>
+        </ul>
+      </section>
+      <section id="history">
+        <h2>CSS History and Versions</h2>
+        <p>Introduced in 1996. Key versions: CSS1, CSS2, CSS3. Features like Flexbox and Grid are modern additions.</p>
+      </section>
+      <section id="css-selectors">
+        <h2>CSS Selectors</h2>
+        <p>Used to target HTML elements.</p>
+        <ul>
+          <li><code>p</code> – element selector</li>
+          <li><code>.myClass</code> – class selector</li>
+          <li><code>#myId</code> – ID selector</li>
+        </ul>
+        <div class="code-block"><code>
+  p { color: white; }<br>
+  .myClass { background-color: yellow; }<br>
+  #myId { font-size: 20px; }
+        </code></div>
+      </section>
+      <section id="box-model">
+        <h2>CSS Box Model</h2>
+        <p>Includes content, padding, border, and margin.</p>
+        <div class="code-block"><code>
+  div {<br>
+    &nbsp;&nbsp;padding: 10px;<br>
+    &nbsp;&nbsp;border: 2px solid green;<br>
+    &nbsp;&nbsp;margin: 20px;<br>
+  }
+        </code></div>
+      </section>
+      <section id="flexbox">
+        <h2>CSS Flexbox</h2>
+        <p>Helps in creating responsive layouts.</p>
+        <div class="code-block"><code>
+  .container {<br>
+    &nbsp;&nbsp;display: flex;<br>
+    &nbsp;&nbsp;justify-content: space-between;<br>
+    &nbsp;&nbsp;align-items: center;<br>
+  }
+        </code></div>
+      </section>
+      <section id="media-queries">
+        <h2>CSS Media Queries</h2>
+        <p>Adapt your design for different screen sizes.</p>
+        <div class="code-block"><code>
+  @media (max-width: 768px) {<br>
+    &nbsp;&nbsp;body { font-size: 14px; }<br>
+  }
+        </code></div>
+      </section>
+      <section id="css-animations">
+        <h2>CSS Animations</h2>
+        <p>Used to animate transitions.</p>
+        <div class="code-block"><code>
+  @keyframes slide {<br>
+    &nbsp;&nbsp;from { left: 0; }<br>
+    &nbsp;&nbsp;to { left: 100px; }<br>
+  }<br>
+  div { animation: slide 2s infinite; }
+        </code></div>
+      </section>
+      <section id="js-intro">
+        <h2>JavaScript Introduction</h2>
+        <p>JavaScript adds interactivity and logic to web pages.</p>
+      </section>
+      <section id="js-basics">
+        <h2>JavaScript Basics</h2>
+        <p>Example using variables and functions:</p>
+        <div class="code-block"><code>
+  let name = "John";<br>
+  function greet() {<br>
+    &nbsp;&nbsp;console.log("Hello, " + name);<br>
+  }<br>
+  greet();
+        </code></div>
+      </section>
+      <section id="js-dom">
+        <h2>JavaScript and the DOM</h2>
+        <p>Access and modify HTML using JavaScript:</p>
+        <div class="code-block"><code>
+  document.getElementById("myElement").textContent = "Updated!";
+        </code></div>
+      </section>
+      <section id="js-example">
+        <h2>JavaScript Example</h2>
+        <div class="code-block"><code>
+  &lt;button onclick="changeText()"&gt;Click Me&lt;/button&gt;<br>
+  &lt;p id="demo"&gt;Original Text&lt;/p&gt;<br>
+  &lt;script&gt;<br>
+  function changeText() {<br>
+    &nbsp;&nbsp;document.getElementById("demo").textContent = "Text Changed!";<br>
+  }<br>
+  &lt;/script&gt;
+        </code></div>
+      </section>
+    </main>
+  </main>
+</body>
+</html>
